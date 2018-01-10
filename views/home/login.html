@@ -1,0 +1,82 @@
+ {% extends "common/layout-home.html" %} {% block homeBanner %}
+<div class="banner_box">
+    <div class="banner_inner">
+        <h2 class="slogan">汇聚天下英才</h2>
+        <p class="des">iKcamp是由沪江Web前端团队发起的自由组织
+            <br>我们追随JavaScript这门语言所秉持的精神，为ITer提供完善的在线学习平台和知识体系</p>
+        <a href="/login" title="gogogo" class="btn" id="gogogo">进入战场</a>
+    </div>
+</div>
+{% endblock %} {% block content %}
+<div class="hp-dialog">
+    <div class="hp-box">
+        <DIV>{{btnName}}</DIV>
+        <form class="form create" method="post ">
+            <div>
+                <label>用户名：</label>
+                <input placeholder="用户名" type="text" name="name">
+            </div>
+            <div>
+                <label>密码：</label>
+                <input placeholder="密码" type="password" name="password">
+            </div>
+            <button class="submit" type="button">登录</button>
+        </form>
+        <div class="error"></div>
+        <div class="success">{{data}}</div>
+    </div>
+</div>
+<div class="hp-overlay"></div>
+<script>
+    $(() => {
+        $('.error').text('请输入用户名或密码').fadeIn(3000)
+        $('.submit').on('click', () => {
+            if ($('input[name=name]').val().trim() == '' || $('input[name=password]').val().trim() == '') {
+                $('.error').text('请输入用户名或密码').fadeOut(3000)
+            } else {
+                console.log($('.form').serialize())
+                $.ajax({
+                    url: "/user/login",
+                    // data: $('.form').serialize(),
+                    data: { name: $('input[name=name]').val().trim(), password: $('input[name=password]').val().trim() },
+                    type: "POST",
+                    cache: false,
+                    dataType: 'json',
+                    success(data) {
+                        console.log('登录ajax data:', data)
+                        if (!data) {
+                            $('.error').text('用户名或密码错误').fadeOut(3000)
+                            $('input').val('')
+                        } else {
+                            if (data.msg == '用户登录成功' && data.data == 1) {
+                                $('.error').text(`欢迎${data.user_name}`)
+                                $('.success').text(data.msg)
+                                window.cookie.set('user_info', JSON.stringify(data))
+                                setTimeout(() => {
+                                    window.location.href = "/user/login_success_index"
+                                    console.log(JSON.parse(window.cookie.get('user_info')))
+                                }, 1000)
+                            }
+                            if (data.msg == '处理err' && data.data == 0) {
+                                $('.success').text(data.msg)
+                                setTimeout(() => {
+                                    $('.success').text('请登录账号')
+                                }, 2000);
+                            }
+                            if (data.msg == '用户已经存在' && data.data == 0) {
+                                $('.success').text(data.msg)
+                                setTimeout(() => {
+                                    $('.success').text('请登录账号')
+                                }, 2000);
+                            }
+                        }
+                    },
+                    error() {
+                        // alert('异常');
+                        console.log("异常")
+                    }
+                })
+            }
+        })
+    })
+</script> {% endblock %}

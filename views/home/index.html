@@ -1,0 +1,19 @@
+ {% extends "common/layout-home.html" %} {% block homeBanner %}
+<div class="banner_box">
+    <div class="banner_inner">
+        <h2 class="slogan">{{data}}</h2>
+        <!-- <p class="des">iKcamp是由沪江Web前端团队发起的自由组织
+            <br>我们追随JavaScript这门语言所秉持的精神，为ITer提供完善的在线学习平台和知识体系</p> -->
+        <a href="/user/login_success_index" title="gogogo" class="btn" id="gogogo">进入战场</a>
+    </div>
+</div>
+<script>
+    $(() => {
+        $('.login').on('click', () => {
+            window.location.href = "/user/login"
+        })
+        $('.register').on('click', () => {
+            window.location.href = "/user/register"
+        })
+    })
+</script> {% endblock %}
